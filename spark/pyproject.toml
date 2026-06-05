@@ -1,0 +1,13 @@
+[project]
+name = "spark"
+version = "0.1.0"
+description = "PySpark analysis of NYC Taxi data"
+requires-python = ">=3.12"
+dependencies = [
+    "pyspark>=4.1.2",
+    "pyarrow>=24.0.0",
+    "sqlframe[duckdb]>=4.2.0",
+]
+
+[dependency-groups]
+dev = []

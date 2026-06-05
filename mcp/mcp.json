@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "DuckDB (in-memory, r/w)": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-motherduck",
+        "--db-path",
+        ":memory:",
+        "--read-write",
+        "--allow-switch-databases"
+      ]
+    }
+  }
+}

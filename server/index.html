@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DuckDB Function – NYC Taxi Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <style>
+    body { font-family: system-ui; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    .controls { display: flex; gap: 2rem; align-items: center; margin: 1rem 0; flex-wrap: wrap; }
+    .control label { font-weight: 600; margin-right: 0.5rem; }
+    #sql { width: 100%; font-family: monospace; font-size: 13px; padding: 0.5rem; height: 200px;
+            background: #f8f8f8; border: 1px solid #ddd; border-radius: 4px; resize: vertical; }
+    #chart-container { width: 100%; height: 400px; margin-top: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; font-size: 12px; }
+    th, td { border: 1px solid #ddd; padding: 4px 8px; text-align: left; }
+    th { background: #f0f0f0; }
+    tr:nth-child(even) { background: #fafafa; }
+    #status { color: #666; margin: 0.5rem 0; font-size: 14px; }
+    .error { color: red; white-space: pre-wrap; }
+    .slider-value { display: inline-block; width: 3rem; text-align: right; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>DuckDB Function – NYC Taxi Demo</h1>
+  <p id="status">Ready – adjust filters to query.</p>
+
+  <div class="controls">
+    <div class="control">
+      <label for="passengers">Passengers:</label>
+      <select id="passengers">
+        <option value="0">All</option>
+        <option value="1" selected>1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </div>
+    <div class="control">
+      <label for="fare">Min Fare: $</label>
+      <input type="range" id="fare" min="0" max="100" value="10" step="5">
+      <span class="slider-value" id="fare-value">10</span>
+    </div>
+  </div>
+
+  <div id="chart-container"><canvas id="chart"></canvas></div>
+  <pre id="sql"></pre>
+  <div id="result"></div>
+
+  <script>
+    let chart = null;
+
+    function renderChart(rows) {
+      const ctx = document.getElementById('chart');
+      const labels = rows.map(r => `Zone ${r.pickup_location}`);
+      const trips = rows.map(r => Number(r.trips));
+      const fares = rows.map(r => Number(r.avg_fare_usd));
+
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Trips', data: trips, backgroundColor: 'rgba(54, 162, 235, 0.7)', yAxisID: 'y' },
+            { label: 'Avg Fare ($)', data: fares, backgroundColor: 'rgba(255, 99, 132, 0.7)', yAxisID: 'y1' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            y: { position: 'left', title: { display: true, text: 'Trips' } },
+            y1: { position: 'right', title: { display: true, text: 'Avg Fare ($)' }, grid: { drawOnChartArea: false } }
+          }
+        }
+      });
+    }
+
+    function renderTable(rows, cols) {
+      if (rows.length === 0) return '<p>No results.</p>';
+      return `<table><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr>` +
+        rows.map(r => `<tr>${cols.map(c => `<td>${r[c]}</td>`).join('')}</tr>`).join('') +
+        `</table>`;
+    }
+
+    async function executeAndRender() {
+      const passengers = document.getElementById('passengers').value;
+      const fare = document.getElementById('fare').value;
+      document.getElementById('status').textContent = 'Querying...';
+
+      try {
+        const t0 = performance.now();
+        const resp = await fetch(`/query?passengers=${passengers}&min_fare=${fare}`);
+        const { sql, rows, cols } = await resp.json();
+        const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+
+        document.getElementById('sql').textContent = sql;
+        renderChart(rows);
+        document.getElementById('result').innerHTML = renderTable(rows, cols);
+        document.getElementById('status').textContent = `Done in ${elapsed}s`;
+      } catch (e) {
+        document.getElementById('result').innerHTML = `<pre class="error">${e.message}</pre>`;
+        document.getElementById('status').textContent = 'Error';
+      }
+    }
+
+    document.getElementById('passengers').addEventListener('change', executeAndRender);
+    document.getElementById('fare').addEventListener('input', () => {
+      document.getElementById('fare-value').textContent = document.getElementById('fare').value;
+    });
+    document.getElementById('fare').addEventListener('change', executeAndRender);
+
+    executeAndRender();
+  </script>
+</body>
+</html>

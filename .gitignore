@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# Node
+node_modules/
+package-lock.json
+
+# DuckDB
+*.duckdb
+*.wal
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AWS CDK
+cdk.out/
+
+# Environment
+.env
+.env.*
+
+# Spark
+spark/output/
+
+# Server
+/server/analytics_data.ducklake.files/
+/server/analytics_data.ducklake
+/server/analytics_data.ducklake.wal
