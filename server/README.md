@@ -30,6 +30,8 @@ FORCE INSTALL quack FROM core_nightly;
 CREATE SECRET ( TYPE quack, TOKEN 'super_secret');
 ATTACH 'quack:localhost' AS remote;
 FROM remote.query("SELECT * from analytics_data.taxi_trips"); 
+FROM whoami();
+FROM remote.query("FROM whoami()");
 ```
 
 WASM Shell
