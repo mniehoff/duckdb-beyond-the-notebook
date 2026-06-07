@@ -1,5 +1,9 @@
 # duckdb as server with ducklake storage
 
+Server
+- runs Ducklake with local duckdb file as catalog
+- executes the query & returns result to client.
+
 ## Run the data infra
 On the server
 
@@ -37,4 +41,36 @@ https://shell.duckdb.org/#queries=v0,FORCE-INSTALL-quack-FROM-core_nightly~,LOAD
 
 ```
 uv run fastapi dev main.py
+```
+
+
+## Alternative: Connect directly to catalog database
+
+Server:
+- only serves as the ducklake catalog
+
+Difference to the one above: the client executes the query. So the client also needs access to the data.
+
+### Server
+
+**start with `duckdb 'lake_catalog.db'`**
+```sql
+CALL quack_serve(
+    'quack:localhost',
+    token => 'super_secret'
+);
+```
+
+### Client
+
+```sql
+CREATE SECRET (
+    TYPE quack, TOKEN 'super_secret'
+);
+ATTACH 'ducklake:quack:localhost'
+    AS lake (DATA_PATH 'data');
+USE lake;
+
+CREATE TABLE taxi_trips AS FROM "seed_data/nyc_taxi_sample.csv";
+SELECT * FROM taxi_trips;
 ```
