@@ -57,7 +57,7 @@ def main() -> None:
             F.mode("pickup_hour").alias("peak_pickup_hour"),
         )
         .orderBy(F.col("trip_count").desc())
-    )
+    ).cache()
 
     # ── Write ─────────────────────────────────────────────────────────────────
     result.write.mode("overwrite").parquet(output)
