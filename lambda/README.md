@@ -1,5 +1,7 @@
 Make sure docker/rancher is running
 
+run in /cdk/
+
 ```
 npx cdk bootstrap
 npx cdk deploy
@@ -17,9 +19,12 @@ unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
 eval "$(aws configure export-credentials --format env)"
 ```
 
-1. Upload CSV: aws s3 cp ../sample_data.csv s3://<csv-bucket>/test.csv
-2. Lambda fires, writes transformed Parquet to the output bucket
-3. Query result: duckdb -c "SELECT * FROM read_parquet('s3://<output-bucket>/warehouse/transformed/*.parquet')"
+
+0. Remove old output bucket contents: `aws s3 rm s3://duckdblambdastack-parquetoutputbucket4dbf9759-y70czgi2wkcs/warehouse/transformed/ --recursive`
+1. Logs: `aws logs tail /aws/lambda/DuckdbLambdaStack-DuckdbFunctionFD0177BA-WBlkPO9wG2tO --follow`
+2. Upload CSV: `aws s3 cp ../sample_data.csv s3://duckdblambdastack-csvuploadbuckete5303144-bap7exgadcsd/test.csv`
+3. Lambda fires, writes transformed Parquet to the output bucket
+4.Query result: `duckdb -c "SELECT * FROM read_parquet('s3://duckdblambdastack-parquetoutputbucket4dbf9759-y70czgi2wkcs/warehouse/transformed/*.parquet')"`
 
 
 
