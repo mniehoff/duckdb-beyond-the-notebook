@@ -1,0 +1,17 @@
+{
+  "mcp": {
+    "servers": {
+      "duckdb in-mem": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "mcp-server-motherduck",
+          "--db-path",
+          ":memory:",
+          "--read-write",
+          "--allow-switch-databases"
+        ]
+      }
+    }
+  }
+}
