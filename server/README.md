@@ -5,10 +5,11 @@ Server
 - executes the query & returns result to client.
 
 ## Run the data infra
-On the server
+### On the server 
+
+open duckdb cli, run the commands below:
 
 ```sql
-FORCE INSTALL quack FROM core_nightly;
 INSTALL ducklake;
 ATTACH 'ducklake:analytics_data.ducklake' AS analytics_data;
 USE analytics_data;
@@ -20,13 +21,17 @@ CALL quack_identify(
     region => 'eu-central-1',
     meta => '{"role": "demo"}'
 );
-
 ```
 
-On the client
+on old versions this might be needed before as quack was not part of the core release.
 
 ```sql
 FORCE INSTALL quack FROM core_nightly;
+```
+
+### On the client (another terminal window)
+
+```sql
 CREATE SECRET ( TYPE quack, TOKEN 'super_secret');
 ATTACH 'quack:localhost' AS remote;
 FROM remote.query("SELECT * from analytics_data.taxi_trips"); 
@@ -34,12 +39,14 @@ FROM whoami();
 FROM remote.query("FROM whoami()");
 ```
 
-WASM Shell
+Use the WASM Shell as a client:
 
 https://shell.duckdb.org/#queries=v0,FORCE-INSTALL-quack-FROM-core_nightly~,LOAD-quack~,CREATE-SECRET-(-TYPE-quack%2C-TOKEN-'super_secret')~,FROM-quack_query('quack%3Alocalhost'%2C-'SELECT-*-from-analytics_data.taxi_trips')~
 
 
-## Run the app
+## Run the app 
+
+Runs as a client
 
 ```
 uv run fastapi dev main.py

@@ -2,8 +2,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from sqlframe import activate
-activate(engine="duckdb")
+#from sqlframe import activate
+#activate(engine="duckdb")
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F

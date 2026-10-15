@@ -28,7 +28,7 @@ Which Spark stages sent the most data back to the driver?
 
 ### Hint
 - "result sent to driver" in log message
-- split_part function: https://duckdb.org/docs/lts/sql/functions/text#split_partstring-separator-index
+- split_part function: https://duckdb.org/docs/current/sql/functions/text#split_partstring-separator-index
 - `delim='\t', quote=''` as paramaters for read_csv reads the line as one column
 
 ### Solution:
@@ -46,6 +46,6 @@ ORDER BY bytes_to_driver DESC
 LIMIT 5;
 ```
 
-https://duckdb.org/docs/lts/clients/cli/output_formats
+https://duckdb.org/docs/current/clients/cli/output_formats
 
 More: https://blobs.duckdb.org/slides/duckdb-ubuntu-summit-2026.pdf
