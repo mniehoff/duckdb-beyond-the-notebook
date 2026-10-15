@@ -5,3 +5,5 @@
 - Add a new endpoint `/hourly` that returns trips and average fare per pickup hour.
 - Add a `max_distance` filter parameter.
 - Stretch: keep one connection with `duckdb.connect()` and a `cursor()` per request, instead of the global `duckdb.sql`. Discuss why.
+
+No need to adjust the UI.
