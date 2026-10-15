@@ -36,3 +36,4 @@ spark/output/
 /server/analytics_data.ducklake.files/
 /server/analytics_data.ducklake
 /server/analytics_data.ducklake.wal
+/server/data
