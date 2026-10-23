@@ -1,4 +1,4 @@
-import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm';
+import * as duckdb from '@duckdb/duckdb-wasm'
 
 let db = null;
 

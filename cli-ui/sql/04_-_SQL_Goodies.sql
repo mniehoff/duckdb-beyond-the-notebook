@@ -1,4 +1,4 @@
-CREATE TABLE t as SELECT * FROM read_json("data/simple/employees.json")
+CREATE TABLE t as SELECT * FROM read_json('data/simple/employees.json')
 
 SELECT * EXCLUDE salary FROM t
 

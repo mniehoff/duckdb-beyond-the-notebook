@@ -27,3 +27,12 @@ FROM read_csv(
     ['data/csv/report_jan.csv', 'data/csv/report_feb.csv'], -- List of files (or glob)
     union_by_name = true -- The magic!
 );
+
+COPY (
+    FROM read_csv(
+        ['data/csv/report_jan.csv', 'data/csv/report_feb.csv'],
+        union_by_name = true
+    )
+) TO 'reports_combined.parquet' (FORMAT PARQUET);
+
+FROM 'reports_combined.parquet';

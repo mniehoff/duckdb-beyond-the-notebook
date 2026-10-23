@@ -23,6 +23,8 @@ CALL quack_identify(
 );
 ```
 
+with duckdb 2.0 `duckdb -serve` can be used so that `quack_serve` can be skipped.
+
 on old versions this might be needed before as quack was not part of the core release.
 
 ```sql
@@ -34,14 +36,27 @@ FORCE INSTALL quack FROM core_nightly;
 ```sql
 CREATE SECRET ( TYPE quack, TOKEN 'super_secret');
 ATTACH 'quack:localhost' AS remote;
-FROM remote.query("SELECT * from analytics_data.taxi_trips"); 
+FROM remote.query('SELECT * from analytics_data.taxi_trips'); 
+FROM remote.query('FROM whoami()');
 FROM whoami();
-FROM remote.query("FROM whoami()");
 ```
 
-Use the WASM Shell as a client:
+or with 2.0 as client
 
-https://shell.duckdb.org/#queries=v0,FORCE-INSTALL-quack-FROM-core_nightly~,LOAD-quack~,CREATE-SECRET-(-TYPE-quack%2C-TOKEN-'super_secret')~,FROM-quack_query('quack%3Alocalhost'%2C-'SELECT-*-from-analytics_data.taxi_trips')~
+```sql
+ATTACH 'quack:localhost' AS qk (TOKEN 'super_secret');
+CONNECT qk;
+SELECT * FROM analytics_data.taxi_trips;
+FROM whoami();
+DISCONNECT;
+FROM whoami();
+```
+
+or start the cli with `duckdb -connect` so that ATTACH & CONNECT is done (only when server started with `duckdb -serve`)
+
+Use the WASM Shell as a client (not yet working with wasm client 2.0.0; https://github.com/duckdb/duckdb-quack/issues/328):
+
+https://shell.duckdb.org/#queries=v0,CREATE-SECRET-(-TYPE-quack%2C-TOKEN-'super_secret')~,FROM-quack_query('quack%3Alocalhost'%2C-'SELECT-*-from-analytics_data.taxi_trips')~
 
 
 ## Run the app 

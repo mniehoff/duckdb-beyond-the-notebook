@@ -12,10 +12,11 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 TABLE_NAME = "analytics_data.taxi_trips"
 
-
+# works with 1.5 and 2.x
+# with 2.x one could also use `CONNECT remote` after the attach and do queries
+# without `FROM remote.query(<query>)` but directly use the <query>"
 def _connect_to_duckdb_server():
     sql = """
-    FORCE INSTALL quack FROM core_nightly;
     CREATE SECRET IF NOT EXISTS quack (
                  TYPE quack,
                  TOKEN 'super_secret'

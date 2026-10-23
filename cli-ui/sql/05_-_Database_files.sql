@@ -2,7 +2,7 @@ ATTACH 'persisent.db';
 
 DROP TABLE IF EXISTS raw_data
 
-CREATE TABLE raw_data AS SELECT * FROM read_json("data/simple/employees.json")
+CREATE TABLE raw_data AS SELECT * FROM read_json('data/simple/employees.json')
 
 -- attach to a remote duckdb database file
 ATTACH 's3://us-prd-motherduck-open-datasets/content/duckdb-as-catalog/ducky_catalog.ddb';
